@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type CatDocument = HydratedDocument<Cat>;
+export type UserDocument = HydratedDocument<User>;
 
 @Schema()
-export class Cat {
+export class User {
   @Prop({
     required: true,
     unique: true,
@@ -13,21 +13,18 @@ export class Cat {
 
   @Prop({
     required: true,
-    unique: true,
+    unique: false,
   })
-  name: string;
+  username: string;
 
-  @Prop()
-  age: number;
-
-  @Prop()
-  breed: string;
+  @Prop({
+    required: true,
+    unique: false,
+  })
+  passwordHash: string;
 
   @Prop()
   createdAt: Date;
-
-  @Prop()
-  friends: string[];
 }
 
-export const CatSchema = SchemaFactory.createForClass(Cat);
+export const UserSchema = SchemaFactory.createForClass(User);
