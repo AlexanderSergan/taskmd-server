@@ -1,6 +1,6 @@
-import { Schema, Prop } from '@nestjs/mongoose';
-import { User } from './user.schema';
-import mongoose from 'mongoose';
+import { Schema, Prop } from '@nestjs/mongoose'
+import { User } from './user.schema'
+import mongoose from 'mongoose'
 
 @Schema()
 export class Tag {
@@ -8,23 +8,23 @@ export class Tag {
     required: true,
     unique: true,
   })
-  id: string;
+  id: string
 
   @Prop({
     required: true,
     unique: true,
   })
-  name: string;
+  name: string
 
   @Prop({
     required: true,
     unique: false,
   })
-  color: string;
+  color: string
 
   @Prop({
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User',
   })
-  createdBy: User;
+  createdBy: User
 }

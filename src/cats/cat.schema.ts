@@ -1,8 +1,8 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { HydratedDocument } from 'mongoose'
+import mongoose from 'mongoose'
 
-export type CatDocument = HydratedDocument<Cat>;
+export type CatDocument = HydratedDocument<Cat>
 
 @Schema()
 export class Cat {
@@ -10,29 +10,29 @@ export class Cat {
     required: false,
     unique: false,
   })
-  id: string;
+  id: string
 
   @Prop({
     required: true,
     unique: true,
   })
-  name: string;
+  name: string
 
   @Prop({
     type: mongoose.SchemaTypes.Number,
     min: 0,
     max: 30,
   })
-  age: number;
+  age: number
 
   @Prop()
-  breed: string;
+  breed: string
 
   @Prop()
-  createdAt: Date;
+  createdAt: Date
 
   @Prop()
-  friends: string[];
+  friends: string[]
 }
 
-export const CatSchema = SchemaFactory.createForClass(Cat);
+export const CatSchema = SchemaFactory.createForClass(Cat)
