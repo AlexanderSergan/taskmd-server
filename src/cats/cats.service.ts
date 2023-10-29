@@ -38,4 +38,8 @@ export class CatsService {
   async deleteCat(id: string) {
     return await this.catModel.findByIdAndRemove(id)
   }
+
+  async deleteTestCats() {
+    return await this.catModel.deleteMany({ name: /test/i })
+  }
 }
