@@ -18,6 +18,15 @@ export class UsersService {
     }
   }
 
+  async findOne(username: string): Promise<User> {
+    try {
+      const user = await this.userModel.findOne({ username })
+      return user
+    } catch (error) {
+      throw new HttpException(error.message, 500)
+    }
+  }
+
   // Get all users
   async getAllUsers(): Promise<User[]> {
     return await this.userModel.find().exec()
