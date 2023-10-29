@@ -1,7 +1,4 @@
 describe('Cats scope', () => {
-  // let createdCatId = null
-  // let allCatsLength = null
-
   it('Can get all cats', () => {
     cy.request('http://localhost:3000/cats')
       .should((res) => {
@@ -9,8 +6,6 @@ describe('Cats scope', () => {
       })
       .then((res) => {
         Cypress.env('allCatsLength', res.body.length)
-
-        // cy.wrap(res.body.length).as('allCatsLength')÷
       })
   })
 
