@@ -29,7 +29,7 @@ export class CatsController {
   @Post()
   async create(@Body() cat: CreateCatDTO) {
     try {
-      await this.catsService.createCat(cat)
+      return await this.catsService.createCat(cat)
       // } catch (message) {
     } catch ({ message }) {
       throw new HttpException(message, 500)

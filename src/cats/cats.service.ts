@@ -23,7 +23,8 @@ export class CatsService {
   async createCat(cat: CreateCatDTO): Promise<Cat> {
     const createdAt = new Date()
     const newCat = new this.catModel({ ...cat, createdAt })
-    return await newCat.save()
+    const saved = await newCat.save()
+    return saved
   }
 
   // Update cat by id
