@@ -72,3 +72,21 @@ describe('Cats scope', () => {
     })
   })
 })
+
+describe('Auth scope', () => {
+  it('Can create new user', () => {
+    cy.request('POST', 'http://localhost:3000/auth/sign-up', {
+      username: 'test-user-' + Math.random(),
+      password: 'pwd' + Math.random(),
+    }).should(res => {
+      expect(res.status).to.eq(201)
+      Cypress.env('createdUserId', res.body._id)
+    })
+  })
+
+  it('Can delete all test users', () => {
+    cy.request('DELETE', 'http://localhost:3000/users').should(res => {
+      expect(res.status).to.eq(200)
+    })
+  })
+})
