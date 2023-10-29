@@ -1,12 +1,9 @@
 describe('Cats scope', () => {
   it('Can get all cats', () => {
-    cy.request('http://localhost:3000/cats')
-      .should((res) => {
-        expect(res.body.length).to.be.greaterThan(0)
-      })
-      .then((res) => {
-        Cypress.env('allCatsLength', res.body.length)
-      })
+    cy.request('http://localhost:3000/cats').should(res => {
+      expect(res.body.length).to.be.greaterThan(0)
+      Cypress.env('allCatsLength', res.body.length)
+    })
   })
 
   it('Can create a cat', () => {
@@ -15,10 +12,10 @@ describe('Cats scope', () => {
       age: 5,
       breed: 'Tabby',
     })
-      .should((res) => {
+      .should(res => {
         expect(res.status).to.eq(201)
       })
-      .then((res) => Cypress.env('createdCatId', res.body._id))
+      .then(res => Cypress.env('createdCatId', res.body._id))
   })
 
   it('Can not create invalid cat', () => {
@@ -31,7 +28,7 @@ describe('Cats scope', () => {
         age: -5,
         breed: 'Tabby',
       },
-    }).should((res) => {
+    }).should(res => {
       expect(res.status).to.eq(500)
     })
   })
@@ -45,7 +42,7 @@ describe('Cats scope', () => {
         age: 2,
         breed: 'Tabby',
       },
-    ).should((res) => {
+    ).should(res => {
       expect(res.status).to.eq(200)
     })
   })
@@ -53,7 +50,7 @@ describe('Cats scope', () => {
   it('Can get a cat by id', () => {
     cy.request(
       'http://localhost:3000/cats/' + Cypress.env('createdCatId'),
-    ).should((res) => {
+    ).should(res => {
       expect(res.status).to.eq(200)
       expect(res.body._id).to.eq(Cypress.env('createdCatId'))
       expect(res.body.age).to.eq(2)
@@ -64,13 +61,13 @@ describe('Cats scope', () => {
     cy.request(
       'DELETE',
       'http://localhost:3000/cats/' + Cypress.env('createdCatId'),
-    ).should((res) => {
+    ).should(res => {
       expect(res.status).to.eq(200)
     })
   })
 
   it('Verify cat was deleted', () => {
-    cy.request('http://localhost:3000/cats/').should((res) => {
+    cy.request('http://localhost:3000/cats/').should(res => {
       expect(res.body.length).to.be.eq(Cypress.env('allCatsLength'))
     })
   })
