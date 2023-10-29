@@ -5,6 +5,8 @@
 # Environment
 .env
 
+# Cypress
+cypress/screenshots
 
 # Logs
 logs
