@@ -28,4 +28,14 @@ export class AuthService {
 
     return null
   }
+
+  async decodeBearerToken(token: string) {
+    const bearer = token.split(' ')
+    const bearerToken = bearer[1]
+    return await this.jwtService.decode(bearerToken)
+  }
+
+  async decodeToken(token: string) {
+    return await this.jwtService.decode(token)
+  }
 }

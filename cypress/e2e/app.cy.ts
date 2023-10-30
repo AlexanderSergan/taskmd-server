@@ -112,7 +112,7 @@ describe('Auth scope', () => {
       },
     }).should(res => {
       expect(res.status).to.eq(200)
-      expect(res.body).to.eq('I am a user')
+      expect(res.body).to.eq('I am ' + Cypress.env('testUserName'))
     })
   })
 

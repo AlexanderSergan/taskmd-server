@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Headers,
   Body,
   HttpException,
   UseGuards,
@@ -39,7 +40,11 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('whoami')
-  async whoami() {
-    return 'I am a user'
+  async whoami(@Headers('Authorization') authorization: string) {
+    console.log('authorization: ', authorization)
+    const token = await this.authService.decodeBearerToken(authorization)
+    console.log('token: ', token)
+
+    return `I am ${token['username']}`
   }
 }
