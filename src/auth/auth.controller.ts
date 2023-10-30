@@ -1,7 +1,15 @@
-import { Controller, Post, Body, HttpException } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  UseGuards,
+} from '@nestjs/common'
 import { UsersService } from 'users/users.service'
 import { CreateUserDto, SignInDto } from 'users/users.dto'
 import { AuthService } from './auth.service'
+import { AuthGuard } from './auth.guard'
+import { Get } from '@nestjs/common'
 
 @Controller('auth')
 export class AuthController {
@@ -27,5 +35,11 @@ export class AuthController {
     } catch ({ message }) {
       throw new HttpException(message, 500)
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('whoami')
+  async whoami() {
+    return 'I am a user'
   }
 }

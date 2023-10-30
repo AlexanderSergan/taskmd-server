@@ -74,13 +74,45 @@ describe('Cats scope', () => {
 })
 
 describe('Auth scope', () => {
+  const testUser = {
+    username: 'test-user-' + Math.random(),
+    password: 'pwd-' + Math.random(),
+  }
+
+  Cypress.env('testUserName', testUser.username)
+  Cypress.env('testUserPassword', testUser.password)
+
   it('Can create new user', () => {
     cy.request('POST', 'http://localhost:3000/auth/sign-up', {
-      username: 'test-user-' + Math.random(),
-      password: 'pwd' + Math.random(),
+      username: Cypress.env('testUserName'),
+      password: Cypress.env('testUserPassword'),
     }).should(res => {
       expect(res.status).to.eq(201)
       Cypress.env('createdUserId', res.body._id)
+    })
+  })
+
+  it('Can get access token', () => {
+    cy.request('POST', 'http://localhost:3000/auth/sign-in', {
+      username: Cypress.env('testUserName'),
+      password: Cypress.env('testUserPassword'),
+    }).should(res => {
+      expect(res.status).to.eq(201)
+      expect(res.body.access_token).to.have.length.greaterThan(0)
+      Cypress.env('accessToken', res.body.access_token)
+    })
+  })
+
+  it('Can get whoami', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:3000/auth/whoami',
+      headers: {
+        Authorization: 'Bearer ' + Cypress.env('accessToken'),
+      },
+    }).should(res => {
+      expect(res.status).to.eq(200)
+      expect(res.body).to.eq('I am a user')
     })
   })
 
