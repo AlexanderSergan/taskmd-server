@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module'
 import { CatsModule } from './cats/cats.module'
 import { UsersModule } from './users/users.module'
 import { AuthService } from 'auth/auth.service'
+// import { SchemasModule } from './schemas/schemas.module';
+import { FoldersModule } from './folders/folders.module'
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { AuthService } from 'auth/auth.service'
     CatsModule,
     UsersModule,
     AuthModule,
+    // SchemasModule,
+    FoldersModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService],

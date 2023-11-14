@@ -29,8 +29,7 @@ export class Cat {
   breed: string
 
   @Prop()
-  createdAt: Date
-
+  // createdAt: Date
   @Prop()
   friends: string[]
 }
