@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 describe('Cats scope', () => {
   it('Can get all cats', () => {
     cy.request('http://localhost:3000/cats').should(res => {
