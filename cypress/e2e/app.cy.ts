@@ -122,4 +122,27 @@ describe('Auth scope', () => {
       expect(res.status).to.eq(200)
     })
   })
+
+  it('Can get all folders by auth token', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:3000/folders',
+      headers: {
+        Authorization: 'Bearer ' + Cypress.env('accessToken'),
+      },
+    }).should(res => {
+      expect(res.status).to.eq(200)
+      expect(res.body.length).to.eq(0)
+    })
+  })
+
+  // it('Can create a new folder', () => {}')
+
+  // it('Can get a folder by id', () => {}')
+
+  // it ('Can create nested folder', () => {}')
+
+  // it('Can delete a folder', () => {}')
+
+  // it('Can delete all test folders', () => {}')
 })

@@ -8,8 +8,12 @@ import { CreateFolderDTO } from './dto/folders.dto'
 export class FoldersService {
   constructor(@InjectModel(Folder.name) private folderModel: Model<Folder>) {}
 
-  async getAllFolders(userId): Promise<Folder[]> {
+  async getAllFoldersByUserId(userId): Promise<Folder[]> {
     return await this.folderModel.find({ userId: userId }).exec()
+  }
+
+  async getFolderById(id: string): Promise<Folder> {
+    return await this.folderModel.findById(id).exec()
   }
 
   async createFolder(folder: CreateFolderDTO): Promise<Folder> {

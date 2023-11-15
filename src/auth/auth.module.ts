@@ -24,5 +24,6 @@ import 'dotenv/config'
   ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}
