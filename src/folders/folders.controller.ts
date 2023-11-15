@@ -35,9 +35,14 @@ export class FoldersController {
   }
 
   @Post()
-  async create(@Body() folder: CreateFolderDTO) {
+  async create(
+    @Body() folder: CreateFolderDTO,
+    @Headers('Authorization') authorization: string,
+  ) {
     try {
-      return await this.foldersService.createFolder(folder)
+      const userId = await this.authService.getUserIdByHeader(authorization)
+
+      return await this.foldersService.createFolder({ userId, ...folder })
     } catch ({ message }) {
       throw new HttpException(message, 500)
     }

@@ -136,9 +136,33 @@ describe('Auth scope', () => {
     })
   })
 
-  // it('Can create a new folder', () => {}')
+  it('Can create a new folder', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:3000/folders',
+      body: {
+        name: 'test-folder-' + Math.random(),
+        notesCount: 0,
+        path: 'root',
+        subfolders: [],
+        notes: [],
+        editable: true,
+      },
+      headers: {
+        Authorization: 'Bearer ' + Cypress.env('accessToken'),
+      },
+    }).should(res => {
+      expect(res.status).to.eq(201)
+      Cypress.env('createdFolderId', res.body._id)
+    })
+  })
 
-  // it('Can get a folder by id', () => {}')
+  // it('Can get a folder by id', () => {
+
+  //   cy.request({
+
+  //   })
+  // })
 
   // it ('Can create nested folder', () => {}')
 

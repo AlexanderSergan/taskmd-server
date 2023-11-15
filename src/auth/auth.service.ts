@@ -38,4 +38,9 @@ export class AuthService {
   async decodeToken(token: string) {
     return await this.jwtService.decode(token)
   }
+
+  async getUserIdByHeader(token: string) {
+    const decoded = await this.decodeBearerToken(token)
+    return decoded['sub']
+  }
 }
