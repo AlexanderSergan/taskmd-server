@@ -5,11 +5,13 @@ import {
   HttpException,
   Param,
   Post,
+  Req,
   Headers,
 } from '@nestjs/common'
 import { FoldersService } from './folders.service'
 import { CreateFolderDTO } from './dto/folders.dto'
 import { AuthService } from 'auth/auth.service'
+import { Request } from 'express'
 
 @Controller('folders')
 export class FoldersController {
@@ -19,9 +21,14 @@ export class FoldersController {
   ) {}
 
   @Get()
-  async foldersByUserId(@Headers('Authorization') authorization: string) {
+  async foldersByUserId(
+    @Headers('Authorization') authorization: string,
+    @Req() request: Request,
+  ) {
     try {
-      const token = await this.authService.decodeBearerToken(authorization)
+      const token = await this.authService.decodeBearerToken(
+        request.cookies['token'],
+      )
       return await this.foldersService.getAllFoldersByUserId(token['sub'])
     } catch ({ message }) {
       throw new HttpException(message, 500)
