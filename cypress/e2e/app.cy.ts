@@ -151,6 +151,17 @@ describe('Auth scope', () => {
     })
   })
 
+  it('Can get all folders after creation', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:3000/folders',
+    }).should(res => {
+      expect(res.status).to.eq(200)
+      expect(res.body.length).to.eq(1)
+    })
+  })
+
   // it('Can get a folder by id', () => {
 
   //   cy.request({
