@@ -6,12 +6,11 @@ import {
   Param,
   Post,
   Req,
-  Headers,
 } from '@nestjs/common'
-import { FoldersService } from './folders.service'
-import { CreateFolderDTO } from './dto/folders.dto'
 import { AuthService } from 'auth/auth.service'
 import { Request } from 'express'
+import { CreateFolderDTO } from './dto/folders.dto'
+import { FoldersService } from './folders.service'
 
 @Controller('folders')
 export class FoldersController {
@@ -21,14 +20,11 @@ export class FoldersController {
   ) {}
 
   @Get()
-  async foldersByUserId(
-    @Headers('Authorization') authorization: string,
-    @Req() request: Request,
-  ) {
+  async foldersByUserId(@Req() request: Request) {
+    console.log('💻 request cookies: ', request.cookies)
     try {
-      const token = await this.authService.decodeBearerToken(
-        request.cookies['token'],
-      )
+      const token = await this.authService.decodeToken(request.cookies['token'])
+      console.log('💻 token extracted: ', token)
       return await this.foldersService.getAllFoldersByUserId(token['sub'])
     } catch ({ message }) {
       throw new HttpException(message, 500)
@@ -42,12 +38,11 @@ export class FoldersController {
   }
 
   @Post()
-  async create(
-    @Body() folder: CreateFolderDTO,
-    @Headers('Authorization') authorization: string,
-  ) {
+  async create(@Body() folder: CreateFolderDTO, @Req() request: Request) {
     try {
-      const userId = await this.authService.getUserIdByHeader(authorization)
+      const userId = await this.authService.getUserIdByCookie(
+        request.cookies['token'],
+      )
 
       return await this.foldersService.createFolder({ userId, ...folder })
     } catch ({ message }) {

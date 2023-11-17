@@ -3,6 +3,7 @@ import {
   Post,
   Headers,
   Body,
+  Req,
   HttpException,
   UseGuards,
 } from '@nestjs/common'
@@ -11,6 +12,7 @@ import { CreateUserDto, SignInDto } from 'users/users.dto'
 import { AuthService } from './auth.service'
 import { AuthGuard } from './auth.guard'
 import { Get } from '@nestjs/common'
+import { Request } from 'express'
 
 @Controller('auth')
 export class AuthController {
@@ -40,11 +42,13 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('whoami')
-  async whoami(@Headers('Authorization') authorization: string) {
-    console.log('authorization: ', authorization)
-    const token = await this.authService.decodeBearerToken(authorization)
-    console.log('token: ', token)
+  async whoami(
+    @Headers('Authorization') authorization: string,
+    @Req() request: Request,
+  ) {
+    const coded = request.cookies['token']
+    const decoded = await this.authService.decodeToken(coded)
 
-    return `I am ${token['username']}`
+    return `I am ${decoded['username']}`
   }
 }

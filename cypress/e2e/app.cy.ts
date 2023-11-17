@@ -105,12 +105,10 @@ describe('Auth scope', () => {
   })
 
   it('Can get whoami', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
     cy.request({
       method: 'GET',
       url: 'http://localhost:3000/auth/whoami',
-      headers: {
-        Authorization: 'Bearer ' + Cypress.env('accessToken'),
-      },
     }).should(res => {
       expect(res.status).to.eq(200)
       expect(res.body).to.eq('I am ' + Cypress.env('testUserName'))
@@ -124,12 +122,10 @@ describe('Auth scope', () => {
   })
 
   it('Can get all folders by auth token', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
     cy.request({
       method: 'GET',
       url: 'http://localhost:3000/folders',
-      headers: {
-        Authorization: 'Bearer ' + Cypress.env('accessToken'),
-      },
     }).should(res => {
       expect(res.status).to.eq(200)
       expect(res.body.length).to.eq(0)
@@ -137,6 +133,7 @@ describe('Auth scope', () => {
   })
 
   it('Can create a new folder', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
     cy.request({
       method: 'POST',
       url: 'http://localhost:3000/folders',
@@ -147,9 +144,6 @@ describe('Auth scope', () => {
         subfolders: [],
         notes: [],
         editable: true,
-      },
-      headers: {
-        Authorization: 'Bearer ' + Cypress.env('accessToken'),
       },
     }).should(res => {
       expect(res.status).to.eq(201)

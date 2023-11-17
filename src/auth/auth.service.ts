@@ -39,8 +39,8 @@ export class AuthService {
     return await this.jwtService.decode(token)
   }
 
-  async getUserIdByHeader(token: string) {
-    const decoded = await this.decodeBearerToken(token)
+  async getUserIdByCookie(token: string) {
+    const decoded = await this.decodeToken(token)
     return decoded['sub']
   }
 }

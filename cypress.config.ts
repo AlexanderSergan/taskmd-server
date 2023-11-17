@@ -3,6 +3,7 @@ import { defineConfig } from 'cypress'
 // import cypressWatchAndReload from 'cypress-watch-and-reload/plugins'
 
 export default defineConfig({
+  screenshotOnRunFailure: false,
   e2e: {
     // env: {
     //   'cypress-watch-and-reload': {
