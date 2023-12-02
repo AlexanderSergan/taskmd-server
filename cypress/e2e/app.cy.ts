@@ -1,4 +1,5 @@
 /* eslint-disable arrow-parens */
+
 describe('Cats scope', () => {
   it('Can get all cats', () => {
     cy.request('http://localhost:3000/cats').should(res => {
@@ -12,11 +13,26 @@ describe('Cats scope', () => {
       name: 'test-Mittens-' + Math.random(),
       age: 5,
       breed: 'Tabby',
+      children: [],
     })
       .should(res => {
         expect(res.status).to.eq(201)
       })
       .then(res => Cypress.env('createdCatId', res.body._id))
+  })
+
+  it('Can create a cat with parent', () => {
+    cy.request('POST', 'http://localhost:3000/cats', {
+      name: 'test-Mittens-' + Math.random(),
+      age: 5,
+      breed: 'Tabby',
+      parent: Cypress.env('createdCatId'),
+      children: [],
+    })
+      .should(res => {
+        expect(res.status).to.eq(201)
+      })
+      .then(res => Cypress.env('createdChildCatId', res.body._id))
   })
 
   it('Can not create invalid cat', () => {
@@ -55,6 +71,10 @@ describe('Cats scope', () => {
       expect(res.status).to.eq(200)
       expect(res.body._id).to.eq(Cypress.env('createdCatId'))
       expect(res.body.age).to.eq(2)
+
+      expect(res.body.children.length).to.eq(1)
+
+      expect(res.body.children[0]._id).to.eq(Cypress.env('createdChildCatId'))
     })
   })
 
@@ -62,6 +82,13 @@ describe('Cats scope', () => {
     cy.request(
       'DELETE',
       'http://localhost:3000/cats/' + Cypress.env('createdCatId'),
+    ).should(res => {
+      expect(res.status).to.eq(200)
+    })
+
+    cy.request(
+      'DELETE',
+      'http://localhost:3000/cats/' + Cypress.env('createdChildCatId'),
     ).should(res => {
       expect(res.status).to.eq(200)
     })

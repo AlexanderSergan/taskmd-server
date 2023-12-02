@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
@@ -21,7 +22,8 @@ export class FoldersController {
 
   @Get()
   async foldersByUserId(@Req() request: Request) {
-    console.log('💻 request cookies: ', request.cookies)
+    console.log('🚎 NO param!🙅🏻‍♂️: ')
+    // console.log('💻 request cookies: ' /, request.cookies)
     try {
       const token = await this.authService.decodeToken(request.cookies['token'])
       console.log('💻 token extracted: ', token)
@@ -32,9 +34,16 @@ export class FoldersController {
     // return this.foldersService.getAllFoldersByUserId(id)
   }
 
-  @Get(':id')
-  async folderById(@Param('id') id: string) {
+  @Get('find/:folderId')
+  async folderById(@Param('folderId') id: string) {
+    console.log('🚎 with param!: ', id)
     return this.foldersService.getFolderById(id)
+  }
+
+  @Get('graphLookup/:folderId')
+  async graphLookup(@Param('folderId') id: string) {
+    console.log('🚎 with param!: ', id)
+    return this.foldersService.findWithGraphLookup(id)
   }
 
   @Post()
@@ -47,6 +56,24 @@ export class FoldersController {
       return await this.foldersService.createFolder({ userId, ...folder })
     } catch ({ message }) {
       throw new HttpException(message, 500)
+    }
+  }
+
+  @Delete('test')
+  async deleteAllTestFolders() {
+    try {
+      return this.foldersService.deleteAllTestFolders()
+    } catch (error) {
+      throw new HttpException(error.message, 500)
+    }
+  }
+
+  @Delete(':id')
+  async deleteFolderById(@Param('id') id: string) {
+    try {
+      return this.foldersService.deleteFolder(id)
+    } catch (error) {
+      throw new HttpException(error.message, 500)
     }
   }
 }

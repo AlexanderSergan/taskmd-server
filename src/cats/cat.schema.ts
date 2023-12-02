@@ -33,6 +33,28 @@ export class Cat {
 
   @Prop()
   friends: string[]
+
+  @Prop({
+    type: mongoose.SchemaTypes.ObjectId,
+    required: false,
+    ref: 'Cat',
+  })
+  parent: Cat | undefined
+
+  @Prop({
+    type: [mongoose.SchemaTypes.ObjectId],
+    ref: 'Cat',
+  })
+  children: any[]
 }
 
-export const CatSchema = SchemaFactory.createForClass(Cat)
+const CatSchema = SchemaFactory.createForClass(Cat)
+
+const autoPopulateChildren = function (next) {
+  this.populate('children')
+  next()
+}
+
+CatSchema.pre('findOne', autoPopulateChildren).pre('find', autoPopulateChildren)
+
+export { CatSchema }

@@ -12,6 +12,7 @@ export class Folder {
   @Prop({
     required: true,
     unique: false,
+    type: mongoose.SchemaTypes.String,
   })
   userId: string
 
@@ -47,7 +48,19 @@ export class Folder {
   })
   notes: any[]
 
-  subfolders: Folder[]
+  @Prop({
+    required: true,
+    type: mongoose.SchemaTypes.String,
+    default: 'root',
+  })
+  parent: string
+
+  @Prop({
+    required: true,
+    unique: false,
+    type: [mongoose.SchemaTypes.String],
+  })
+  subfolders: string[]
 
   @Prop()
   createdAt?: Date
@@ -57,7 +70,3 @@ export class Folder {
 }
 
 export const FolderSchema = SchemaFactory.createForClass(Folder)
-
-FolderSchema.add({
-  subfolders: [FolderSchema],
-})

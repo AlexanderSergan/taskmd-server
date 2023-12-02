@@ -3,6 +3,7 @@ export interface CreateCatDTO {
   age: number
   breed: string
   friends: string[]
+  parent?: string
 }
 
 export interface UpdateCatDTO {
