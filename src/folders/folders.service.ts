@@ -8,38 +8,56 @@ import { CreateFolderDTO } from './dto/folders.dto'
 export class FoldersService {
   constructor(@InjectModel(Folder.name) private folderModel: Model<Folder>) {}
 
-  async getAllFoldersByUserId(userId): Promise<Folder[]> {
+  async getAllFoldersByUserId(userId, root = false): Promise<Folder[]> {
     console.log('💻 getAllFolderByUserId: ', userId)
+    if (root) {
+      return await this.folderModel
+        .find({ userId: userId, parent: 'root' })
+        .exec()
+    }
     return await this.folderModel.find({ userId: userId }).exec()
   }
 
   async getFolderById(id: string): Promise<any> {
-    console.log('💻 getFolderById: ', id)
-
-    return this.folderModel.find({ _id: id }).exec()
-
-    // return await this.folderModel.findById(id).exec()
+    return this.folderModel.findById(id).exec()
   }
 
   async createFolder(folder: CreateFolderDTO): Promise<Folder> {
     const createdAt = new Date()
-    const newFolder = new this.folderModel({ ...folder, createdAt })
-    const saved = await newFolder.save()
-    return saved
+
+    const { parent } = folder
+
+    if (parent !== 'root') {
+      const parentFolder = await this.folderModel.findById(parent).exec()
+
+      const parentRef = parentFolder._id
+
+      const newFolder = new this.folderModel({
+        ...folder,
+        createdAt,
+        parent: parentRef,
+      })
+      const saved = await newFolder.save()
+
+      parentFolder.subfolders.push(saved._id as unknown as Folder)
+      await parentFolder.save()
+      return saved
+    } else {
+      const newFolder = new this.folderModel({ ...folder, createdAt })
+      const saved = await newFolder.save()
+      return saved
+    }
   }
 
-  async findWithGraphLookup(id: string) {
-    console.log('Aggregation start by id: ', id)
-    return await this.folderModel
+  async aggregateFolderById(id: string): Promise<any> {
+    const folderRef = await this.folderModel.findById(id).exec()
+
+    const folder = await this.folderModel
       .aggregate([
         {
           $match: {
-            // _id: '655b79061f121161f32de324',
-            // name: 'test1',
-            parent: 'root',
-
-            // userId: '653e86536373ce6173b10f8e',
-            // userId: '653e86536373ce6173b10f8e',
+            // _id: folderRef._id,
+            name: '😛 Face',
           },
         },
         {
@@ -49,15 +67,28 @@ export class FoldersService {
             connectFromField: '_id',
             connectToField: 'parent',
             as: 'subs',
-            depthField: 'depthIndex',
-            maxDepth: 100,
-            restrictSearchWithMatch: {
-              path: 'root',
-            },
+            depthField: 'depth',
           },
         },
+        // {
+        //   $unwind: '$subfolders',
+        // },
+        // {
+        //   $sort: {
+        //     'subfolders.depth': 1,
+        //   },
+        // },
+        // {
+        //   $group: {
+        //     _id: '$_id',
+        //     name: { $first: '$name' },
+        //     subfolders: { $push: '$subfolders' },
+        //   },
+        // },
       ])
       .exec()
+
+    return folder
   }
 
   async deleteFolder(folderId: string) {

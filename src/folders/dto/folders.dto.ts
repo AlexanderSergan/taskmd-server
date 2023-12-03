@@ -6,4 +6,5 @@ export interface CreateFolderDTO {
   path: string
   notes: any[]
   subfolders: CreateFolderDTO[]
+  parent?: string
 }

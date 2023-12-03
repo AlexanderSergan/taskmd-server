@@ -57,10 +57,10 @@ export class Folder {
 
   @Prop({
     required: true,
-    unique: false,
-    type: [mongoose.SchemaTypes.String],
+    type: [mongoose.SchemaTypes.ObjectId],
+    ref: 'Folder',
   })
-  subfolders: string[]
+  subfolders: any[]
 
   @Prop()
   createdAt?: Date
@@ -68,5 +68,21 @@ export class Folder {
   @Prop()
   updatedAt?: Date
 }
+const FolderSchema = SchemaFactory.createForClass(Folder)
 
-export const FolderSchema = SchemaFactory.createForClass(Folder)
+function autoPopulateChildren(next) {
+  this.populate('subfolders')
+  console.log('👀 autoPopulateChildren: ', this)
+  next()
+}
+// const autoPopulateChildren = function (next) {
+//   this.populate('subfolders')
+//   next()
+// }
+
+FolderSchema.pre('findOne', autoPopulateChildren).pre(
+  'find',
+  autoPopulateChildren,
+)
+
+export { FolderSchema }

@@ -21,13 +21,13 @@ export class FoldersController {
   ) {}
 
   @Get()
-  async foldersByUserId(@Req() request: Request) {
+  async foldersByUserId(@Req() request: Request, @Param('root') root: boolean) {
     console.log('🚎 NO param!🙅🏻‍♂️: ')
     // console.log('💻 request cookies: ' /, request.cookies)
     try {
       const token = await this.authService.decodeToken(request.cookies['token'])
       console.log('💻 token extracted: ', token)
-      return await this.foldersService.getAllFoldersByUserId(token['sub'])
+      return await this.foldersService.getAllFoldersByUserId(token['sub'], root)
     } catch ({ message }) {
       throw new HttpException(message, 500)
     }
@@ -40,10 +40,10 @@ export class FoldersController {
     return this.foldersService.getFolderById(id)
   }
 
-  @Get('graphLookup/:folderId')
-  async graphLookup(@Param('folderId') id: string) {
+  @Get('aggregate/:folderId')
+  async aggregateFolderById(@Param('folderId') id: string) {
     console.log('🚎 with param!: ', id)
-    return this.foldersService.findWithGraphLookup(id)
+    return this.foldersService.aggregateFolderById(id)
   }
 
   @Post()

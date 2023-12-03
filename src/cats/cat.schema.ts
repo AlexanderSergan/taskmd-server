@@ -50,10 +50,16 @@ export class Cat {
 
 const CatSchema = SchemaFactory.createForClass(Cat)
 
-const autoPopulateChildren = function (next) {
+function autoPopulateChildren(next) {
   this.populate('children')
+
+  console.log('👀 autoPopulateChildren: ', this)
   next()
 }
+// const autoPopulateChildren = function (next) {
+//   this.populate('children')
+//   next()
+// }
 
 CatSchema.pre('findOne', autoPopulateChildren).pre('find', autoPopulateChildren)
 

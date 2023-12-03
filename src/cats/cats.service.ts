@@ -16,18 +16,12 @@ export class CatsService {
 
   // Get cat by id
   async getCatById(id: string) {
-    // return await this.catModel.findById(id).exec()
-
-    // Populate parent and children
-    return await this.catModel
-      .findById(id)
-      .populate('parent')
-      .populate('children')
-      .exec()
+    return await this.catModel.findById(id).exec()
   }
 
   // Create cat
   async createCat(cat: CreateCatDTO): Promise<Cat> {
+    const createdAt = new Date()
     const { parent } = cat
 
     if (parent) {
@@ -35,7 +29,6 @@ export class CatsService {
 
       const parentRef = parentCat._id
 
-      const createdAt = new Date()
       const newCat = new this.catModel({ ...cat, createdAt, parent: parentRef })
       const saved = await newCat.save()
 
@@ -43,7 +36,6 @@ export class CatsService {
       await parentCat.save()
       return saved
     } else {
-      const createdAt = new Date()
       const newCat = new this.catModel({ ...cat, createdAt })
       const saved = await newCat.save()
       return saved
