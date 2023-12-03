@@ -72,13 +72,8 @@ const FolderSchema = SchemaFactory.createForClass(Folder)
 
 function autoPopulateChildren(next) {
   this.populate('subfolders')
-  console.log('👀 autoPopulateChildren: ', this)
   next()
 }
-// const autoPopulateChildren = function (next) {
-//   this.populate('subfolders')
-//   next()
-// }
 
 FolderSchema.pre('findOne', autoPopulateChildren).pre(
   'find',

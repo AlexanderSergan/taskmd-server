@@ -166,6 +166,9 @@ describe('Auth scope', () => {
       url: 'http://localhost:3000/folders',
       body: {
         name: 'test-folder-' + Math.random(),
+        // TODO: why we need userId if we can get it from token?
+        userId: Cypress.env('createdUserId'),
+        parent: 'root',
         notesCount: 0,
         path: 'root',
         subfolders: [],
@@ -178,6 +181,44 @@ describe('Auth scope', () => {
     })
   })
 
+  it('Can create a child folder', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:3000/folders',
+      body: {
+        name: 'test-folder-' + Math.random(),
+        notesCount: 0,
+        // TODO: why we need userId if we can get it from token?
+        userId: Cypress.env('createdUserId'),
+        path: 'root',
+        subfolders: [],
+        notes: [],
+        editable: true,
+        parent: Cypress.env('createdFolderId'),
+      },
+    }).should(res => {
+      expect(res.status).to.eq(201)
+      Cypress.env('createdChildFolderId', res.body._id)
+    })
+  })
+
+  it('Can get folder by id and verify child folder', () => {
+    cy.setCookie('token', Cypress.env('accessToken'))
+    cy.request({
+      method: 'GET',
+      url:
+        'http://localhost:3000/folders/find/' + Cypress.env('createdFolderId'),
+    }).should(res => {
+      expect(res.status).to.eq(200)
+      expect(res.body._id).to.eq(Cypress.env('createdFolderId'))
+      expect(res.body.subfolders.length).to.eq(1)
+      expect(res.body.subfolders[0]._id).to.eq(
+        Cypress.env('createdChildFolderId'),
+      )
+    })
+  })
+
   it('Can get all folders after creation', () => {
     cy.setCookie('token', Cypress.env('accessToken'))
     cy.request({
@@ -185,18 +226,9 @@ describe('Auth scope', () => {
       url: 'http://localhost:3000/folders',
     }).should(res => {
       expect(res.status).to.eq(200)
-      expect(res.body.length).to.eq(1)
+      expect(res.body.length).to.eq(2)
     })
   })
-
-  // it('Can get a folder by id', () => {
-
-  //   cy.request({
-
-  //   })
-  // })
-
-  // it ('Can create nested folder', () => {}')
 
   // it('Can delete a folder', () => {}')
 

@@ -8,13 +8,17 @@ import { CreateFolderDTO } from './dto/folders.dto'
 export class FoldersService {
   constructor(@InjectModel(Folder.name) private folderModel: Model<Folder>) {}
 
-  async getAllFoldersByUserId(userId, root = false): Promise<Folder[]> {
-    console.log('💻 getAllFolderByUserId: ', userId)
-    if (root) {
+  async getAllFoldersByUserId(
+    userId,
+    root = 'false' as any,
+  ): Promise<Folder[]> {
+    if (root === 'true') {
+      console.log('[Get All Folders]: root is true')
       return await this.folderModel
         .find({ userId: userId, parent: 'root' })
         .exec()
     }
+    console.log('[Get All Folders]: root is false')
     return await this.folderModel.find({ userId: userId }).exec()
   }
 
@@ -50,14 +54,14 @@ export class FoldersService {
   }
 
   async aggregateFolderById(id: string): Promise<any> {
-    const folderRef = await this.folderModel.findById(id).exec()
+    const folderRef = await this.folderModel.findById(id)
 
     const folder = await this.folderModel
       .aggregate([
         {
           $match: {
-            // _id: folderRef._id,
-            name: '😛 Face',
+            _id: folderRef._id,
+            // name: '😛 Face',
           },
         },
         {
