@@ -219,18 +219,19 @@ describe('Auth scope', () => {
     })
   })
 
-  it('Can get all folders after creation', () => {
+  it('Can delete a folder', () => {
     cy.setCookie('token', Cypress.env('accessToken'))
     cy.request({
-      method: 'GET',
-      url: 'http://localhost:3000/folders',
+      method: 'DELETE',
+      url: 'http://localhost:3000/folders/' + Cypress.env('createdFolderId'),
     }).should(res => {
       expect(res.status).to.eq(200)
-      expect(res.body.length).to.eq(2)
     })
   })
 
-  // it('Can delete a folder', () => {}')
-
-  // it('Can delete all test folders', () => {}')
+  it('Can delete all test folders', () => {
+    cy.request('DELETE', 'http://localhost:3000/folders/test').should(res => {
+      expect(res.status).to.eq(200)
+    })
+  })
 })
