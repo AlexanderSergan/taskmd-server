@@ -22,13 +22,29 @@ export class FoldersController {
 
   @Get()
   async foldersByUserId(@Req() request: Request) {
-    const { query } = request
+    const { query, cookies, headers } = request
+    console.log('👁️👁️ Got cookies: ', cookies)
     console.log('🚎 with query!: ', query['root'])
+    console.log('🚎 with headers!: ', headers)
+    let token
+
+    if (headers['authorization']) {
+      token = headers['authorization'].split(' ')[1]
+    } else if (cookies['token']) {
+      token = cookies['token']
+    }
+
+    // if (!cookies['token']) {
+    //   console.log('🚨 No token in cookies')
+    //   throw new HttpException('No token', 500)
+    //   return
+    // }
+
     try {
-      const token = await this.authService.decodeToken(request.cookies['token'])
+      const decoded = await this.authService.decodeToken(token)
       // console.log('💻 token extracted: ', token)
       return await this.foldersService.getAllFoldersByUserId(
-        token['sub'],
+        decoded['sub'],
         query['root'],
       )
     } catch ({ message }) {
